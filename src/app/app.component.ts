@@ -19,21 +19,22 @@ export class AppComponent implements OnInit {
         await this.wait(1);
       }
       return `loop: ${seconds}`;
-
   }
 
-  wait = (ms) => {
-    return new Promise(r => setTimeout(r, ms));
+  wait = async ms => {
+    setTimeout(() => {}, ms);
+  }
+
+  doAsynchronously = async() => {
+    const a = this.loop(10).then( result => { this.log(result); return result; });
+    const b = this.loop(3).then( result => { this.log(result); return result; });
+    const result = await Promise.all([a, b]);
+    console.log(result + '');
   }
 
   ngOnInit() {
     this.log('synchronous 1');
-    (async () => (async () => {
-      const a = this.loop(10).then( result => {this.log(result); return result; });
-      const b = this.loop(3).then( result => {this.log(result); return result; });
-      const result = await Promise.all([a, b]);
-      console.log(result + '');
-    })())();
+    this.doAsynchronously();
     this.log('synchronous 2');
   }
 }
